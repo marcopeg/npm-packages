@@ -1,0 +1,34 @@
+{
+  "name": "@forrestjs/core",
+  "version": "0.0.2",
+  "description": "ForrestJS Monorepo",
+  "scripts": {
+    "boot": "npm install && lerna bootstrap",
+    "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
+    "test": "lerna run test",
+    "ci-bootstrap": "lerna bootstrap --hoist",
+    "ci-test": "lerna run test",
+    "deploy": "lerna publish --force-publish"
+  },
+  "author": "Marco Pegoraro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/forrestjs/core/issues"
+  },
+  "homepage": "https://forrestjs.github.io",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forrestjs/core.git"
+  },
+  "keywords": [
+    "react",
+    "ssr",
+    "redux",
+    "universal",
+    "server side rendering"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "lerna": "^3.14.1"
+  }
+}
