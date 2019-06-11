@@ -1,7 +1,7 @@
 {
   "name": "graphql-extension",
   "description": "Helps parsing JSON definition of a portion of a GraphQL schema",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
   "bugs": {
     "url": "https://github.com/marcopeg/npm-packages/issues"
