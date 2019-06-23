@@ -377,6 +377,7 @@ describe('graphql-parser', () => {
         })
     })
 
+    // @TODO: Mock HTTP requests
     describe('parseQueryResolver()', () => {
         test('it should be able to integrate different extensions', async () => {
             const typicode = parseExtension({
@@ -465,7 +466,7 @@ describe('graphql-parser', () => {
             }`
 
             const r1 = await graphql(schema, query)
-            // console.log(r1.data)
+            // console.log(JSON.stringify(r1.data))
             expect(r1.data.Typicode.user.id).toBe('8')
             expect(r1.data.Typicode.users).toBeInstanceOf(Array)
             expect(r1.data.Trevorblades.continent.name).toBe('Europe')

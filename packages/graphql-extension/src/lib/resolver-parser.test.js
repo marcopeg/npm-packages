@@ -1,10 +1,13 @@
 import 'babel-polyfill'
-
 import { resolverParser } from './resolver-parser'
 
 describe('resolverParser()', () => {
     describe('REST', () => {
         test('it should parse a simple get request into data', async () => {
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => Promise.resolve({
+                json: () => Promise.resolve([]),
+            }))
+
             const resolve = resolverParser({
                 type: 'rest',
                 url: 'https://jsonplaceholder.typicode.com/users',
@@ -19,6 +22,12 @@ describe('resolverParser()', () => {
                 type: 'rest',
                 url: 'https://jsonplaceholder.typicode.com/users/{{userId}}',
             })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => Promise.resolve({
+                json: () => Promise.resolve({
+                    id: parseInt(url.split('/').pop(), 10)
+                }),
+            }))
 
             const res = await resolve({ userId: 2 })
             expect(res.id).toBe(2)
@@ -38,6 +47,13 @@ describe('resolverParser()', () => {
                     userId: '{{userId}}',
                 },
             })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => Promise.resolve({
+                json: () => Promise.resolve({
+                    ...JSON.parse(config.body),
+                    id: 101,
+                }),
+            }))
 
             const res = await resolve({
                 title: 'foo',
@@ -66,8 +82,16 @@ describe('resolverParser()', () => {
                 },
             }
 
+            const fetchMock = (url, config) => Promise.resolve({
+                json: () => Promise.resolve({ name: JSON.parse(config.body).name }),
+            })
+
             const resolve = resolverParser(config)
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce(fetchMock)
             const r1 = await resolve({ name: 'Marco' })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce(fetchMock)
             const r2 = await resolve({ name: 'Luca' })
 
             expect(r1.name).toBe('Marco')
@@ -75,10 +99,16 @@ describe('resolverParser()', () => {
         })
 
         test('it should grab part of the response', async () => {
+            jest.spyOn(global, 'fetch').mockImplementationOnce(() => Promise.resolve({
+                json: () => Promise.resolve([
+                    { name: 'Clementine Bauch' },
+                ]),
+            }))
+
             const resolve = resolverParser({
                 type: 'rest',
                 url: 'https://jsonplaceholder.typicode.com/users',
-                grab: '$2.name',
+                grab: '$0.name',
             })
 
             const res = await resolve()
@@ -86,6 +116,16 @@ describe('resolverParser()', () => {
         })
 
         test('it should re-shape the response', async () => {
+            jest.spyOn(global, 'fetch').mockImplementationOnce(() => Promise.resolve({
+                json: () => Promise.resolve({
+                    id: 1,
+                    address: {
+                        street: 'foo',
+                        city: 'faa',
+                    },
+                }),
+            }))
+
             const resolve = resolverParser({
                 type: 'rest',
                 url: 'https://jsonplaceholder.typicode.com/users/2',
@@ -96,9 +136,10 @@ describe('resolverParser()', () => {
             })
 
             const res = await resolve()
+
             expect(res).toEqual({
-                id: 2,
-                address: 'Victor Plains, Wisokyburgh',
+                id: 1,
+                address: 'foo, faa',
             })
         })
     })
@@ -110,6 +151,16 @@ describe('resolverParser()', () => {
                 url: 'https://countries.trevorblades.com/',
                 query: '{ country (code: "IT") { code name phone currency }}',
             })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => Promise.resolve({
+                json: () => Promise.resolve({
+                    data: {
+                        country: {
+                            code: 'IT',
+                        },
+                    },
+                }),
+            }))
 
             const res = await resolve()
             expect(res.data.country.code).toBe('IT')
@@ -123,8 +174,16 @@ describe('resolverParser()', () => {
                 grab: 'data.continents',
             })
 
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => Promise.resolve({
+                json: () => Promise.resolve({
+                    data: {
+                        continents: [{}],
+                    },
+                }),
+            }))
+
             const res = await resolve()
-            expect(res.length).toBe(7)
+            expect(res.length).toBe(1)
         })
 
         test('it should make queries with variables', async () => {
@@ -133,6 +192,16 @@ describe('resolverParser()', () => {
                 url: 'https://countries.trevorblades.com/',
                 query: 'query foo ($code: String!) { country (code: $code) { code name phone currency }}',
             })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => Promise.resolve({
+                json: () => Promise.resolve({
+                    data: {
+                        country: {
+                            code: JSON.parse(config.body).variables.code,
+                        },
+                    },
+                }),
+            }))
 
             const res = await resolve({ code: 'US' })
             expect(res.data.country.code).toBe('US')
@@ -146,8 +215,20 @@ describe('resolverParser()', () => {
                 grab: 'data.country.code',
             })
 
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => Promise.resolve({
+                json: () => Promise.resolve({
+                    data: {
+                        country: {
+                            code: JSON.parse(config.body).variables.code,
+                        },
+                    },
+                }),
+            }))
+
             const res = await resolve({ code: 'US' })
             expect(res).toBe('US')
         })
     })
 })
+
+
