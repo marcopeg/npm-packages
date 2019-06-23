@@ -84,6 +84,20 @@ describe('resolverParser()', () => {
             const res = await resolve()
             expect(res).toBe('Clementine Bauch')
         })
+
+        // test('it should re-shape the response', async () => {
+        //     const resolve = resolverParser({
+        //         type: 'rest',
+        //         url: 'https://jsonplaceholder.typicode.com/users/2',
+        //         shape: {
+        //             id: '{{ id }}',
+        //             address: '{{ address.street }}, {{ address.city }}'
+        //         },
+        //     })
+
+        //     const res = await resolve()
+        //     console.log(res)
+        // })
     })
 
     describe('GraphQL', () => {

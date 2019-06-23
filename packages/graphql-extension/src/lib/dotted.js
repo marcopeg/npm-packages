@@ -8,6 +8,8 @@ export const dotted = (source, path) => {
         return source
     }
 
+    // const res = JSON.parse(JSON.stringify(source))
+
     return path.split('.').reduce((curr, key) => {
         if (key[0] !== '$') {
             return curr[key]
