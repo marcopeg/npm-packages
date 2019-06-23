@@ -1,35 +1,44 @@
 /**
- * Minimal Template Engine
- * =======================
- *
- *     template('{{foo}}', { foo: 123 }) -> '123'
- *
- * The idea is to have something similar to Mustache/PUG but I don't
- * want to bring the dependency in just yet.
- *
- * ## Vars replacement
- *
- *     {{varName}}
- *
- * ## Url Encoded Replacements
- *
- *     {{{varName}}}
- *
- * ## Nested Replacements
- *
- *     {{obj.key.sub}}
+ * Mini mustache-like templating library that operates variable substitution
+ * in strings, arrays and objects.
  */
 
-import flat from 'flat'
+import { dotted } from './dotted'
 
-export const template = (str, vars = {}) => {
-    const flatten = flat(vars)
-
-    const replaceKey = (acc, curr) => {
-        acc = acc.replace(`{{{${curr}}}}`, encodeURIComponent(flatten[curr]))
-        acc = acc.replace(`{{${curr}}}`, flatten[curr])
-        return acc
+export const template = (tpl, variables) => {
+    if (!variables) {
+        return tpl
     }
 
-    return Object.keys(flatten).reduce(replaceKey, str)
+    // work on sttring templates
+    if (typeof tpl === 'string') {
+        // reference
+        const dataValue = variables[tpl]
+        if (dataValue !== undefined) {
+            return dataValue
+        }
+
+        // unwrapped template
+        try {
+            const dottedValue = dotted(variables, tpl)
+            if (dottedValue !== undefined) {
+                return dottedValue
+            }
+        } catch (err) {}
+
+        // wrapped template
+        return tpl
+            .replace(/\{\{\{(.+?)\}\}\}/g, (_, v) => encodeURIComponent(dotted(variables, v.trim())))
+            .replace(/\{\{(.+?)\}\}/g, (_, v) => dotted(variables, v.trim()))
+    }
+
+    // works on array
+    if (Array.isArray(tpl))
+    return tpl.map(v => template(v, variables))
+
+    // work on nested objects
+    const res = {}
+    Object.keys(tpl).forEach(key => res[key] = template(tpl[key], variables))
+
+    return res
 }

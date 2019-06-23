@@ -27,7 +27,10 @@ const resolverParserREST = (config) => async (variables) => {
     const res = await fetch(url, fetchConfig)
 
     const data = await res.json()
-    return dotted(data, config.grab)
+    
+    return config.shape
+        ? template(config.shape, dotted(data, config.grab))
+        : dotted(data, config.grab)
 }
 
 const resolverParserGQL = (config) => {
