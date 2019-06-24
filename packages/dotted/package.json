@@ -17,8 +17,13 @@
   },
   "homepage": "https://github.com/marcopeg/npm-packages/tree/master/packages/dotted#readme",
   "keywords": [
-    "graphql",
-    "extension"
+    "object",
+    "extract",
+    "dot",
+    "path",
+    "dotted",
+    "properties",
+    "value"
   ],
   "license": "MIT",
   "publishConfig": {
