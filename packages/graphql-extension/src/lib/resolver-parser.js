@@ -2,6 +2,8 @@ import 'isomorphic-fetch'
 import clone from 'clone-deep'
 import { template } from './template'
 import { dotted } from './dotted'
+import { applyRules } from './resolver-rules'
+
 
 const resolverParserREST = (config) => async (variables) => {
     const fetchConfig = {
@@ -25,12 +27,7 @@ const resolverParserREST = (config) => async (variables) => {
 
     const url = template(config.url, variables)
     const res = await fetch(url, fetchConfig)
-
-    const data = await res.json()
-    
-    return config.shape
-        ? template(config.shape, dotted(data, config.grab))
-        : dotted(data, config.grab)
+    return applyRules(config, res)
 }
 
 const resolverParserGQL = (config) => {
@@ -52,7 +49,9 @@ const resolverParserGQL = (config) => {
         })
 
         const res = await restRequest(variables)
-        return dotted(res, config.grab)
+        return config.shape
+            ? template(config.shape, dotted(res, config.grab))
+            : dotted(res, config.grab)
     }
 }
 

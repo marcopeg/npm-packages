@@ -142,6 +142,119 @@ describe('resolverParser()', () => {
                 address: 'foo, faa',
             })
         })
+
+        test('it should handle custom behaviors based on generic response conditions', async () => {
+            const resolve = resolverParser({
+                type: 'rest',
+                url: 'https://app.mysocial.io/api/v1/auth/uname',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    _uname: 'mpe',
+                },
+                rules: [
+                    {
+                        match: [ 'status', [ 400, 404 ] ],
+                        apply: [ 'throw', '{{ res.status }} {{ res.statusText }}' ]
+                    }
+                ],
+            })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce(() => Promise.resolve({
+                status: 404,
+                statusText: 'Username not found',
+            }))
+
+            try {
+                await resolve()
+            } catch (err) {
+                expect(err.message).toBe('404 Username not found')
+            }
+        })
+
+        test('it should convert a plain statusText into a JSON response', async () => {
+            const resolve = resolverParser({
+                type: 'rest',
+                url: 'https://app.mysocial.io/api/v1/auth/uname',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    uname: 'mpeg13',
+                },
+                rules: [
+                    {
+                        match: [ 'status', [ 400, 404 ] ],
+                        apply: [ 'res2json', { err: 'res.statusText' } ]
+                    }
+                ],
+            })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce(() => Promise.resolve({
+                status: 404,
+                statusText: 'Username not found',
+                text: () => Promise.resolve('ok ok'),
+            }))
+
+            const res = await resolve()
+            expect(res).toEqual({ err: 'Username not found' })
+        })
+
+        test('it should reshape a response to be just a boolean', async () => {
+            const resolve = resolverParser({
+                type: 'rest',
+                url: 'https://app.mysocial.io/api/v1/auth/uname',
+                rules: [
+                    {
+                        match: [ 'all', [ 400, 404 ] ],
+                        apply: [ 'json', null, true ]
+                    }
+                ],
+            })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce(() => Promise.resolve({
+                status: 200,
+                json: () => Promise.resolve({ foo: 'aaa' }),
+            }))
+
+            const res = await resolve()
+            expect(res).toBe(true)
+        })
+
+        test('it should reshape to null', async () => {
+            const resolve = resolverParser({
+                type: 'rest',
+                url: 'https://app.mysocial.io/api/v1/auth',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    uname: '{{uname}}',
+                    passwd: '{{passwd}}'
+                },
+                rules: [
+                    {
+                        match: [ 'status', [ 422 ] ],
+                        apply: [ 'throw', '{{ res.statusText }}' ]
+                    },
+                ],
+            })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce(() => Promise.resolve({
+                status: 422,
+                statusText: 'foo',
+            }))
+
+            try {
+                await resolve({ uname: 'foo', passwd: 'foo' })
+            } catch (err) {
+                expect(err.message).toBe('foo')
+            }
+        })
     })
 
     describe('GraphQL', () => {

@@ -18,6 +18,7 @@ describe('template', () => {
     test('it should return the same input if nothing is passed', () => {
         expect(template(source)).toBe(source)
         expect(template('foo')).toBe('foo')
+        expect(template(true)).toBe(true)
     })
 
     test('it should inject simple variable, mustache like', () => {

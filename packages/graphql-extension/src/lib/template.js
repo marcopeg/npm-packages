@@ -6,7 +6,7 @@
 import { dotted } from './dotted'
 
 export const template = (tpl, variables) => {
-    if (!variables) {
+    if (!variables || [ 'boolean', 'number' ].includes(typeof tpl)) {
         return tpl
     }
 
