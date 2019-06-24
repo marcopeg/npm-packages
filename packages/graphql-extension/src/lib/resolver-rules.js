@@ -18,7 +18,7 @@
  */
 
 import dotted from '@marcopeg/dotted'
-import { template } from './template'
+import template from '@marcopeg/template'
 
 const ruleMatcher = {
     // used for the fallback rule

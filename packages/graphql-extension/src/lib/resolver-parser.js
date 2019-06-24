@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import clone from 'clone-deep'
 import dotted from '@marcopeg/dotted'
-import { template } from './template'
+import template from '@marcopeg/template'
 import { applyRules } from './resolver-rules'
 
 

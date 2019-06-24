@@ -1,6 +1,6 @@
 {
-  "name": "graphql-extension",
-  "description": "Helps parsing JSON definition of a portion of a GraphQL schema",
+  "name": "@marcopeg/template",
+  "description": "Minimalist variable substitution utility",
   "version": "0.1.1",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
   "bugs": {
@@ -8,34 +8,26 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.4.4",
-    "@marcopeg/dotted": "^0.1.1",
-    "@marcopeg/template": "^0.1.1",
-    "clone-deep": "^4.0.1",
-    "flat": "^4.1.0",
-    "graphql": "^14.3.1",
-    "graphql-type-json": "^0.3.0",
-    "isomorphic-fetch": "^2.2.1"
-  },
-  "peerDependencies": {
-    "graphql": "^14.3.1"
+    "@marcopeg/dotted": "^0.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.4",
     "@forrestjs/babel-preset-package": "^2.9.4",
-    "babel-polyfill": "^6.26.0",
     "cross-env": "^5.1.4"
   },
-  "homepage": "https://github.com/marcopeg/npm-packages/tree/master/packages/graphql-extension#readme",
+  "homepage": "https://github.com/marcopeg/npm-packages/tree/master/packages/template#readme",
   "keywords": [
-    "graphql",
-    "extension"
+    "template",
+    "tpl",
+    "variables",
+    "mustache"
   ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "repository": "https://github.com/marcopeg/npm-packages/tree/master/packages/graphql-extension",
+  "repository": "https://github.com/marcopeg/npm-packages/tree/master/packages/template",
   "scripts": {
     "clean": "rm -rf node_modules && rm -f yarn.lock && rm -f package-lock.json",
     "test": "jest",
@@ -43,6 +35,5 @@
     "prepare": "cross-env NODE_ENV=production npm run build",
     "watch": "babel -w src --out-dir . --ignore **/__tests__",
     "watch:to": "babel -w src --out-dir \"${TARGET}/node_modules/${npm_package_name}\" --ignore **/__tests__"
-  },
-  "gitHead": "842378d848c42fb0c272e888ea538ec04335cfc4"
+  }
 }
