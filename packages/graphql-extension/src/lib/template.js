@@ -3,7 +3,7 @@
  * in strings, arrays and objects.
  */
 
-import { dotted } from './dotted'
+import dotted from '@marcopeg/dotted'
 
 export const template = (tpl, variables) => {
     if (!variables || [ 'boolean', 'number' ].includes(typeof tpl)) {
