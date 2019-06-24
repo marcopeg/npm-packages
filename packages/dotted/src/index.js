@@ -1,1 +1,1 @@
-export { dotted as default } from './dotted'
+export { dotted as default } from './lib/dotted'

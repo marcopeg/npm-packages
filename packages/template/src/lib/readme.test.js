@@ -1,4 +1,4 @@
-import template from './index'
+import template from '../index'
 
 const data = {
     name: 'marco',

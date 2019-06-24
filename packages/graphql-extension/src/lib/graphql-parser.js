@@ -3,7 +3,7 @@ import { GraphQLNonNull, GraphQLList } from 'graphql'
 import { GraphQLObjectType, GraphQLInputObjectType } from 'graphql'
 import GraphQLJSON from 'graphql-type-json'
 
-import { resolverParser } from './resolver-parser'
+import createFetchResolver from 'fetch-resolver'
 
 const getTypeName = (name, options = {}) =>
     options.alias ? `${options.alias}__${name}` : name
@@ -14,7 +14,7 @@ const parseQueryResolver = (source) => {
     }
 
     // @TODO: hooks or config to inject some validation or limitation logic?
-    const resolveFn = resolverParser(source)
+    const resolveFn = createFetchResolver(source)
     return async (_, args) => resolveFn(args)
 }
 const parseExtensionResolver = (source) => {

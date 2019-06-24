@@ -1,4 +1,4 @@
-import dotted from './index'
+import dotted from '../index'
 
 const data = {
     name: 'marco',
