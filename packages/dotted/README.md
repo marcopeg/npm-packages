@@ -1,6 +1,6 @@
 # @marcopeg/dotted
 
-Extract data from an object using a dotted notation.
+Extract data from an object using a dotted notation:
 
 ```js
 import dotted from '@marcopeg/dotted'
@@ -35,4 +35,22 @@ dotted(data, 'family.siblings.$FIRST.name')
 
 dotted(data, 'family.siblings.$LAST.name')
 // -> elisa
+```
+
+Set data into an object using a dotted notation:
+
+```js
+import dotted from '@marcopeg/dotted'
+
+dotted.set({}, 'foo', 1)
+// -> { foo: 1 }
+
+// Fills missing layers
+dotted.set({}, 'foo.faa.fii', 1)
+// -> { foo: { faa: { fii: 1 } } }
+
+const source = { foo: 1 }
+const result = dotted.set.immutable(source, 'foo', 2)
+// -> source !== result (true)
+// -> result.foo === 2 (true)
 ```

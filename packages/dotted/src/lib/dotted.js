@@ -3,6 +3,8 @@
  *
  */
 
+import { dottedSet } from './dotted.set'
+
 export const dotted = (source, path) => {
     if (!path) {
         return source
@@ -37,3 +39,5 @@ export const dotted = (source, path) => {
         }
     }, source)
 }
+
+dotted.set = dottedSet
