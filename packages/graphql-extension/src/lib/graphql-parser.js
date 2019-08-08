@@ -16,14 +16,14 @@ const parseQueryResolver = (name, field, source, options) => {
     // @TODO: hooks or config to inject some validation or limitation logic?
     const resolveFn = createFetchResolver(source)
 
-    return async (root, args, ctx, info) => {
+    return async (root, args, context, info) => {
         // integration point with the hooks
         if (options.hooks) {
             await options.hooks.createHook.serie('GRAPHQL_EXTENSION_RESOLVE', {
                 extension: name,
                 method: field,
                 type: options.rootType,
-                graphql: { root, args, ctx, info },
+                graphql: { root, args, context, info },
             })
         }
 
