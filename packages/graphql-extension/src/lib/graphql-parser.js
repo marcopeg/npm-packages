@@ -8,14 +8,27 @@ import createFetchResolver from 'fetch-resolver'
 const getTypeName = (name, options = {}) =>
     options.alias ? `${options.alias}__${name}` : name
 
-const parseQueryResolver = (source) => {
+const parseQueryResolver = (name, field, source, options) => {
     if (typeof source === 'function') {
         return source
     }
 
     // @TODO: hooks or config to inject some validation or limitation logic?
     const resolveFn = createFetchResolver(source)
-    return async (_, args) => resolveFn(args)
+
+    return async (root, args, ctx, info) => {
+        // integration point with the hooks
+        if (options.hooks) {
+            await options.hooks.createHook.serie('GRAPHQL_EXTENSION_RESOLVE', {
+                extension: name,
+                method: field,
+                type: options.rootType,
+                graphql: { root, args, ctx, info },
+            })
+        }
+
+        return resolveFn(args)
+    }
 }
 const parseExtensionResolver = (source) => {
     if (source === true) {
@@ -142,7 +155,7 @@ export const parseEndpoints = (endpoints, types, options) =>
             }, types, options)
 
         const resolve = endpoints[curr].resolve
-            ? { resolve: parseQueryResolver(endpoints[curr].resolve) }
+            ? { resolve: parseQueryResolver(options.alias, curr, endpoints[curr].resolve, options) }
             : {}
 
         return {
@@ -155,8 +168,9 @@ export const parseEndpoints = (endpoints, types, options) =>
         }
     }, {})
 
-export const parseExtension = (config) => {
-    const options = { alias: config.name }
+export const parseExtension = (config, options = {}) => {
+    options.alias = config.name
+
     const types = {
         ...parseInputTypes(config.inputTypes || {}, options),
         ...parseTypes(config.types || {}, options),
@@ -172,7 +186,10 @@ export const parseExtension = (config) => {
                     ),
                     type: new GraphQLObjectType({
                         name: `${config.name}Query`,
-                        fields: parseEndpoints(config.queries, types, options),
+                        fields: parseEndpoints(config.queries, types, {
+                            ...options,
+                            rootType: 'query'
+                        }),
                     }),
                 },
             }
@@ -186,7 +203,10 @@ export const parseExtension = (config) => {
                     ),
                     type: new GraphQLObjectType({
                         name: `${config.name}Mutation`,
-                        fields: parseEndpoints(config.mutations, types, options),
+                        fields: parseEndpoints(config.mutations, types, {
+                            ...options,
+                            rootType: 'mutation'
+                        }),
                     }),
                 },
             }
