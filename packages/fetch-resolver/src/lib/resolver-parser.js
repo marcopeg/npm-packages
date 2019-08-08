@@ -27,6 +27,12 @@ const resolverParserREST = (config) => async (variables) => {
 
     const url = template(config.url, variables)
     const res = await fetch(url, fetchConfig)
+
+    // improve error logging
+    if (res.status >= 400) {
+        throw new Error(`${res.status} - ${res.statusText}`)
+    }
+
     return applyRules(config, res)
 }
 
