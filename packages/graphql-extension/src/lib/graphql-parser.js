@@ -23,6 +23,7 @@ const parseQueryResolver = (name, field, source, options) => {
                 extension: name,
                 method: field,
                 type: options.rootType,
+                source,
                 graphql: { root, args, context, info },
             })
         }
