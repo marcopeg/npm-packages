@@ -25,6 +25,14 @@ const resolverParserREST = (config) => async (variables) => {
     })
     fetchConfig.body = JSON.stringify(fetchConfig.body)
 
+    // remove empty body - this was causing a big pain in the ass!!!
+    // looks like there is an inconsistent behavior in ExpressJS when
+    // a GET contains a "body" and the handler awaits a promise
+    // https://github.com/expressjs/express/issues/4026
+    if (fetchConfig.method === 'GET' || fetchConfig.body === '{}') {
+        delete fetchConfig.body
+    }
+
     const url = template(config.url, variables)
     const res = await fetch(url, fetchConfig)
 
