@@ -37,36 +37,40 @@ const resolverParserREST = (config) => async (variables) => {
     const res = await fetch(url, fetchConfig)
 
     // improve error logging
-    if (res.status >= 400) {
-        throw new Error(`${res.status} - ${res.statusText}`)
-    }
+    // if (res.status >= 400) {
+    //     throw new Error(`${res.status} - ${res.statusText}`)
+    // }
 
     return applyRules(config, res)
 }
 
-const resolverParserGQL = (config) => {
+const resolverParserGQL = (config) => async (variables) => {
     const restConfig = {
         url: config.url,
         method: (config.method || 'POST').toUpperCase(),
         headers: {
-            "Content-type": "application/json; charset=UTF-8",
+            ...clone(config.headers || {}),
+            'Content-type': 'application/json; charset=UTF-8',
         },
     }
 
-    return async (variables) => {
-        const restRequest = resolverParserREST({
-            ...restConfig,
-            body: {
-                query: config.query,
-                variables,
-            },
-        })
+    // handle variables in headers
+    Object.keys(restConfig.headers).forEach(key => {
+        restConfig.headers[key] = template(restConfig.headers[key], variables)
+    })
 
-        const res = await restRequest(variables)
-        return config.shape
-            ? template(config.shape, dotted(res, config.grab))
-            : dotted(res, config.grab)
-    }
+    const restRequest = resolverParserREST({
+        ...restConfig,
+        body: {
+            query: config.query,
+            variables,
+        },
+    })
+
+    const res = await restRequest(variables)
+    return config.shape
+        ? template(config.shape, dotted(res, config.grab))
+        : dotted(res, config.grab)
 }
 
 const parsers = {

@@ -341,6 +341,34 @@ describe('resolverParser()', () => {
             const res = await resolve({ code: 'US' })
             expect(res).toBe('US')
         })
+
+        test('it should pass custom headers to the request', async () => {
+            const resolve = resolverParser({
+                type: 'graphql',
+                url: 'https://countries.trevorblades.com/',
+                query: 'query foo ($code: String!) { country (code: $code) { code name phone currency }}',
+                grab: 'data.country.code',
+                headers: {
+                    'foo': 'aa {{ code }}',
+                },
+            })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => {
+                expect(config.headers.foo).toBe('aa US')
+                return Promise.resolve({
+                    json: () => Promise.resolve({
+                        data: {
+                            country: {
+                                code: JSON.parse(config.body).variables.code,
+                            },
+                        },
+                    }),
+                })
+            })
+
+            const res = await resolve({ code: 'US' })
+            expect(res).toBe('US')
+        })
     })
 })
 
