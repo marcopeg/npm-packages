@@ -59,11 +59,20 @@ const resolverParserGQL = (config) => async (variables) => {
         restConfig.headers[key] = template(restConfig.headers[key], variables)
     })
 
+    // build custom query variables from a template
+    let queryVariables = null
+    if (config.variables) {
+        queryVariables = clone(config.variables)
+        Object.keys(queryVariables).forEach(key => {
+            queryVariables[key] = template(queryVariables[key], variables)
+        })  
+    }
+
     const restRequest = resolverParserREST({
         ...restConfig,
         body: {
             query: config.query,
-            variables,
+            variables: queryVariables || variables,
         },
     })
 

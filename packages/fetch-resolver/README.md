@@ -55,7 +55,29 @@ const resolver03 = createFetchResolver({
 
 const res03 = await resolver03({ id: 1 })
 // -> { value: 'xxx', loc: [ lat, lng ]}
+
+
+// Example 04
+// ----------
+// compose a GraphQL request
+const resolve04 = createFetchResolver({
+    type: 'graphql',
+    url: 'https://countries.trevorblades.com/',
+    query: 'query foo ($code: String!) { country (code: $code) { code name phone currency }}',
+    variables: { code: '{{ the.code }}' },
+    grab: 'data.country.code',
+})
+
+const res04 = await resolve04({ the: { code: 'US' }})
+// -> "US"
+// note that we build a custom "variable" description that is capable of using the actual set
+// of variables that are passed down to the resolver handler.
+// this way we can use a nested JSON structure as data origin and re-shape the GraphQL's variables
+// in a decent and declarative way.
 ```
 
 > Take a look at the tests to see other usecases with POST and GraphQL requests.
+
+
+
 

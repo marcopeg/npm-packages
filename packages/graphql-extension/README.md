@@ -8,6 +8,9 @@ import { parseExtension } from 'graphql-extension'
 // create an extension
 const extension = parseExtension({
     "name": "Typicode",
+    "variables": {
+        "baseUrl": "https://jsonplaceholder.typicode.com",
+    },
     "types": {
         "User": {
             "id": "ID!",
@@ -24,7 +27,7 @@ const extension = parseExtension({
             "type": "[User]",
             "resolve": {
                 "type": "rest",
-                "url": "https://jsonplaceholder.typicode.com/users"
+                "url": "{{ baseUrl }}/users"
             }
         },
         "user": {
@@ -34,7 +37,7 @@ const extension = parseExtension({
             },
             "resolve": {
                 "type": "rest",
-                "url": "https://jsonplaceholder.typicode.com/users/{{id}}"
+                "url": "{{ baseUrl }}/users/{{id}}"
             }
         }
     },
@@ -47,7 +50,7 @@ const extension = parseExtension({
             "resolve": {
                 "type": "rest",
                 "method": "post",
-                "url": "https://jsonplaceholder.typicode.com/users",
+                "url": "{{ baseUrl }}/users",
                 "headers": {
                     "Content-type": "application/json; charset=UTF-8"
                 },
