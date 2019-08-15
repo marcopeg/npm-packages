@@ -36,11 +36,6 @@ const resolverParserREST = (config) => async (variables) => {
     const url = template(config.url, variables)
     const res = await fetch(url, fetchConfig)
 
-    // improve error logging
-    // if (res.status >= 400) {
-    //     throw new Error(`${res.status} - ${res.statusText}`)
-    // }
-
     return applyRules(config, res)
 }
 
@@ -52,6 +47,7 @@ const resolverParserGQL = (config) => async (variables) => {
             ...clone(config.headers || {}),
             'Content-type': 'application/json; charset=UTF-8',
         },
+        rules: clone(config.rules || []),
     }
 
     // handle variables in headers

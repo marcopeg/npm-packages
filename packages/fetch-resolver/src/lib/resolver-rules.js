@@ -45,7 +45,10 @@ const ruleApply = {
         const text = await res.text()
         return template(rule.apply[1], { res, text })
     },
-    statusError: ({ rule, res }) => ({ err: `${res.status} ${res.statusText}` }),
+    // just throw a template with the full status error
+    statusError: ({ rule, res }) => {
+        throw new Error(`${res.status} ${res.statusText}`)
+    },
     // yeah... just return some plain values out of the rule
     value: ({ rule }) => rule.apply[1],
 }

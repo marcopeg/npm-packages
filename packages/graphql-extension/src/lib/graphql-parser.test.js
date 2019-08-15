@@ -585,6 +585,9 @@ describe('graphql-parser', () => {
             const trevorblades = parseExtension({
                 name: 'Trevorblades',
                 shouldRunQueries: true,
+                variables: {
+                    baseUrl: 'https://countries.trevorblades.com/',
+                },
                 types: {
                     Continent: {
                         code: 'ID!',
@@ -599,7 +602,7 @@ describe('graphql-parser', () => {
                         type: '[Continent]',
                         resolve: {
                             type: 'graphql',
-                            url: 'https://countries.trevorblades.com/',
+                            url: 'baseUrl',
                             headers: { 'x-token': '{{ root.token }}' },
                             query: '{ continents { code name }}',
                             grab: 'data.continents',
@@ -612,7 +615,7 @@ describe('graphql-parser', () => {
                         },
                         resolve: {
                             type: 'graphql',
-                            url: 'https://countries.trevorblades.com/',
+                            url: 'baseUrl',
                             headers: { 'x-token': '{{ root.token }}' },
                             query: 'query foo ($code: String!) { continent (code: $code) { code name }}',
                             variables: { code: '{{ args.code }}' },
@@ -673,6 +676,147 @@ describe('graphql-parser', () => {
             expect(r1.data.Typicode.users).toBeInstanceOf(Array)
             expect(r1.data.Trevorblades.continent.code).toBe('EU')
             expect(r1.data.Trevorblades.continents.length).toBe(7)
+
+            global.fetch.mockClear()
+        })
+
+        test('it should be able to show meaningful errors from the applied rules', async () => {
+            const typicode = parseExtension({
+                name: 'Typicode',
+                shouldRunQueries: true,
+                variables: {
+                    baseUrl: 'https://jsonplaceholder.typicode.com/users',
+                },
+                types: {
+                    User: {
+                        id: 'ID!',
+                        name: 'String',
+                    },
+                },
+                queries: {
+                    __wrapper__: {
+                        args: { token: 'ID!' },
+                    },
+                    users: {
+                        type: '[User]',
+                        resolve: {
+                            type: 'rest',
+                            url: '{{ baseUrl }}',
+                            headers: { 'x-token': '{{ root.token }}' },
+                            rules: [{
+                                match: ['statusError'],
+                                apply: ['statusError'],
+                            }],
+                        },
+                    },
+                    user: {
+                        type: 'User',
+                        args: {
+                            id: 'ID!',
+                        },
+                        resolve: {
+                            type: 'rest',
+                            url: '{{ baseUrl }}/{{args.id}}',
+                            headers: { 'x-token': '{{ root.token }}' },
+                            rules: [{
+                                match: ['statusError'],
+                                apply: ['statusError'],
+                            }],
+                        },
+                    },
+                },
+            })
+
+            const trevorblades = parseExtension({
+                name: 'Trevorblades',
+                shouldRunQueries: true,
+                variables: {
+                    baseUrl: 'https://countries.trevorblades.com/',
+                },
+                types: {
+                    Continent: {
+                        code: 'ID!',
+                        name: 'String',
+                    },
+                },
+                queries: {
+                    __wrapper__: {
+                        args: { token: 'ID!' },
+                    },
+                    continents: {
+                        type: '[Continent]',
+                        resolve: {
+                            type: 'graphql',
+                            url: 'baseUrl',
+                            headers: { 'x-token': '{{ root.token }}' },
+                            rules: [{
+                                match: ['statusError'],
+                                apply: ['statusError'],
+                            }],
+                            query: '{ continents { code name }}',
+                            grab: 'data.continents',
+                        },
+                    },
+                    continent: {
+                        type: 'Continent',
+                        args: {
+                            code: 'String!',
+                        },
+                        resolve: {
+                            type: 'graphql',
+                            url: 'baseUrl',
+                            headers: { 'x-token': '{{ root.token }}' },
+                            rules: [{
+                                match: ['statusError'],
+                                apply: ['statusError'],
+                            }],
+                            query: 'query foo ($code: String!) { continent (code: $code) { code name }}',
+                            variables: { code: '{{ args.code }}' },
+                            grab: 'data.continent',
+                        },
+                    },
+                },
+            })
+
+            const schema = new GraphQLSchema({
+                query: new GraphQLObjectType({
+                    name: 'RootQuery',
+                    fields: {
+                        ...typicode.queries,
+                        ...trevorblades.queries,
+                    },
+                }),
+            })
+
+            const query = `
+                query q (
+                    $token: ID!
+                    $countryCode: String!
+                ) {
+                    Typicode (token: $token) {
+                        user (id: 8) { id name }
+                        users { id name }
+                    }
+                    Trevorblades (token: $token) {
+                        continent (code: $countryCode) { code }
+                        continents { code name }
+                    }
+                }`
+
+                jest.spyOn(global, 'fetch').mockImplementation((url, config) => Promise.resolve({
+                    status: 400,
+                    statusText: 'not available'
+                }))
+
+            const r1 = await graphql(schema, query, null, null, {
+                token: 'tk1',
+                countryCode: 'EU',
+            })
+            console.log(r1)
+
+            r1.errors.forEach(err => {
+                expect(err.message).toBe('400 not available')
+            })
 
             global.fetch.mockClear()
         })

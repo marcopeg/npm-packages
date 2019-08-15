@@ -228,8 +228,11 @@ describe('resolverParser()', () => {
                 text: () => Promise.resolve('ok ok'),
             }))
 
-            const res = await resolve()
-            expect(res).toEqual({ err: '404 Username not found' })
+            try {
+                await resolve()
+            } catch (err) {
+                expect(err.message).toEqual('404 Username not found')
+            }
         })
 
         test('it should reshape a response to be just a boolean', async () => {
