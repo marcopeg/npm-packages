@@ -202,6 +202,35 @@ describe('resolverParser()', () => {
             const res = await resolve()
             expect(res).toEqual({ err: 'Username not found' })
         })
+        
+        test('it should throw if status >=400', async () => {
+            const resolve = resolverParser({
+                type: 'rest',
+                url: 'https://app.mysocial.io/api/v1/auth/uname',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    uname: 'mpeg13',
+                },
+                rules: [
+                    {
+                        match: [ 'statusError' ],
+                        apply: [ 'statusError' ]
+                    }
+                ],
+            })
+
+            jest.spyOn(global, 'fetch').mockImplementationOnce(() => Promise.resolve({
+                status: 404,
+                statusText: 'Username not found',
+                text: () => Promise.resolve('ok ok'),
+            }))
+
+            const res = await resolve()
+            expect(res).toEqual({ err: '404 Username not found' })
+        })
 
         test('it should reshape a response to be just a boolean', async () => {
             const resolve = resolverParser({

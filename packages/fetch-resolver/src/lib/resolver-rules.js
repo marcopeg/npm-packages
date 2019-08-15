@@ -25,6 +25,7 @@ const ruleMatcher = {
     all: () => true,
     // matches the status code against a list of possible options
     status: ({ rule, res }) => rule.match[1].includes(res.status),
+    statusError: ({ rule, res }) => res.status >= 400,
 }
 
 const ruleApply = {
@@ -44,6 +45,7 @@ const ruleApply = {
         const text = await res.text()
         return template(rule.apply[1], { res, text })
     },
+    statusError: ({ rule, res }) => ({ err: `${res.status} ${res.statusText}` }),
     // yeah... just return some plain values out of the rule
     value: ({ rule }) => rule.apply[1],
 }
