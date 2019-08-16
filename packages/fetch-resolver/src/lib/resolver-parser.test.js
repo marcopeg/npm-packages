@@ -432,6 +432,35 @@ describe('resolverParser()', () => {
             const res = await resolve({ the: { code: 'US' }})
             expect(res).toBe('US')
         })
+
+        // test('it should forward nicely formatted errors', async () => {
+        //     const resolve = resolverParser({
+        //         type: 'graphql',
+        //         url: 'https://countries.trevorblades.com/',
+        //         query: 'query foo ($code: String!) { country (code: $code) { code name phone currency }}',
+        //         variables: {
+        //             code: '{{ the.code }}',
+        //         },
+        //         grab: 'data.country.code',
+        //         headers: {
+        //             'foo': 'aa {{ the.code }}',
+        //         },
+        //     })
+
+        //     jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) => {
+        //         return Promise.reject({
+        //             status: '500',
+        //             statusCode: 'Unexpected Error'
+        //         })
+        //     })
+
+        //     try {
+        //         const res = await resolve({ the: { code: 'US' }})
+        //         console.log(res)
+        //     } catch (err) {
+        //         console.log(err)
+        //     }
+        // })
     })
 })
 

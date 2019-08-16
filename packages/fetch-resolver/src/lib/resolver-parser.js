@@ -73,6 +73,12 @@ const resolverParserGQL = (config) => async (variables) => {
     })
 
     const res = await restRequest(variables)
+
+    // Throw if any of the underlying APIs returns any kind of error
+    if (res.errors) {
+        throw new Error(res.errors.map(err => err.message).join(' -- '))
+    }
+
     return config.shape
         ? template(config.shape, dotted(res, config.grab))
         : dotted(res, config.grab)
