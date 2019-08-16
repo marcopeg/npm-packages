@@ -1,7 +1,7 @@
 {
   "name": "fetch-resolver",
   "description": "Generate custom fetch resolver functions for REST and GraphQL using a JSON definition",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
   "bugs": {
     "url": "https://github.com/marcopeg/npm-packages/issues"
