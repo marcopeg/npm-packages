@@ -121,7 +121,7 @@ export const createExtension = ({
     }
 
     const validateRequest = async (req, {
-        header = 'x-grapi-signature',
+        header = 'x-crossroad-signature',
         message = 'Invalid GRAPI Signature',
     } = {}) => {
         if (!await validateSecret(req.headers[header])) {
@@ -130,7 +130,7 @@ export const createExtension = ({
     }
 
     const createMiddleware = ({
-        header = 'x-grapi-signature',
+        header = 'x-crossroad-signature',
         statusCode = 400,
         statusMessage = 'Invalid GRAPI Signature',
     } = {}) =>
