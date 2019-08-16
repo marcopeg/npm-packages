@@ -76,7 +76,7 @@ const resolverParserGQL = (config) => async (variables) => {
 
     // Throw if any of the underlying APIs returns any kind of error
     if (res.errors) {
-        throw new Error(res.errors.map(err => err.message).join(' -- '))
+        throw new Error(res.errors.map(err => err.message).join(' :: '))
     }
 
     return config.shape

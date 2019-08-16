@@ -26,17 +26,36 @@ export const createExtension = ({
     endpoint,
     token,
     variables,
+    headers = [],
     secret: originalSecret,
     definition: originalDefinition,
 }) => {
     // Make sure the original definition is left untouched
     // and fill in dynamically defined variables
+    // (handles both dictionary or list format)
     const definition = clone(originalDefinition)
     definition.name = name
-    definition.variables = Object.keys(variables).reduce((acc, curr) => ([
-        ...acc,
-        { name: curr, value: variables[curr] },
-    ]), [])
+    definition.variables = Array.isArray(variables)
+        ? variables
+        : Object.keys(variables).reduce((acc, curr) => ([
+            ...acc,
+            { name: curr, value: variables[curr] },
+        ]), [])
+
+    // Inject shared headers
+    // (handles both dictionary or list format)
+    const injectHeaders = item => {
+        !item.resolve.headers && (item.resolve.headers = [])
+        if (Array.isArray(headers)) {
+            headers.forEach(header => item.resolve.headers.unshift(header))
+        } else {
+            Object.keys(headers).forEach(name => {
+                item.resolve.headers.unshift({ name, value: headers[name] })
+            })
+        }
+    }
+    definition.queries && definition.queries.forEach(injectHeaders)
+    definition.mutations && definition.mutations.forEach(injectHeaders)
 
     // Set the initial secret for the extension
     // (new secrets are prepended (unshift), old secrets are popped)
