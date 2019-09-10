@@ -1,7 +1,8 @@
 {
-  "name": "@forrestjs/core",
-  "version": "0.0.2",
-  "description": "ForrestJS Monorepo",
+  "name": "@marcopeg/packages",
+  "version": "0.0.3",
+  "description": "Marcopeg Monorepo",
+  "private": true,
   "scripts": {
     "boot": "npm install && lerna bootstrap",
     "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
