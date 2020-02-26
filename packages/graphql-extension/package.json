@@ -12,6 +12,7 @@
     "@marcopeg/template": "^1.2.0",
     "fetch-resolver": "^1.2.0",
     "flat": "^4.1.0",
+    "graphql": "^14.6.0",
     "graphql-type-json": "^0.3.0"
   },
   "peerDependencies": {
@@ -22,7 +23,8 @@
     "@babel/core": "^7.4.4",
     "@forrestjs/babel-preset-package": "^2.9.4",
     "babel-polyfill": "^6.26.0",
-    "cross-env": "^5.1.4"
+    "cross-env": "^5.1.4",
+    "jest": "^25.1.0"
   },
   "homepage": "https://github.com/marcopeg/npm-packages/tree/master/packages/graphql-extension#readme",
   "keywords": [
@@ -35,12 +37,12 @@
   },
   "repository": "https://github.com/marcopeg/npm-packages/tree/master/packages/graphql-extension",
   "scripts": {
-    "clean": "rm -rf node_modules && rm -f yarn.lock && rm -f package-lock.json",
+    "clean": "rm -rf node_modules && rm -f yarn.lock && rm -f package-lock.json && rm -rf lib",
     "test": "jest",
-    "build": "babel src --out-dir . --ignore **/__tests__",
+    "build": "babel src --out-dir . --ignore '**/*.test.js'",
     "prepare": "cross-env NODE_ENV=production npm run build",
-    "watch": "babel -w src --out-dir . --ignore **/__tests__",
-    "watch:to": "babel -w src --out-dir \"${TARGET}/node_modules/${npm_package_name}\" --ignore **/__tests__"
+    "watch": "babel -w src --out-dir . --ignore '**/*.test.js'",
+    "watch:to": "babel -w src --out-dir \"${TARGET}/node_modules/${npm_package_name}\" --ignore '**/*.test.js'"
   },
   "gitHead": "047967b7d836ef4e67255f2eb4d16d139e57d4b1"
 }
