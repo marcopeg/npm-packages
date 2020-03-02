@@ -1,0 +1,16 @@
+{
+  "name": "@marcopeg/spawn",
+  "version": "0.1.0",
+  "description": "An async wrapper around child_process.spawn with a rich API to control the spawned process",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jest --runInBand --testTimeout=10000",
+    "tdd": "./node_modules/.bin/jest --runInBand --watchAll --testTimeout=10000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^25.1.0"
+  }
+}
