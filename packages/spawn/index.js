@@ -57,6 +57,7 @@ const spawn = (cmd, options = {}) => {
     });
 
     child.stderr.on("data", data => {
+      const str = data.toString().trim();
       log && log(str, data, true);
       stderr.push(data.toString().trim());
     });
