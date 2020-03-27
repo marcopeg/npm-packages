@@ -36,6 +36,7 @@
   "scripts": {
     "clean": "rm -rf node_modules && rm -f yarn.lock && rm -f package-lock.json && rm -rf lib",
     "test": "jest",
+    "tdd": "jest --runInBand --watchAll --testTimeout=10000",
     "build": "babel src --out-dir . --ignore '**/*.test.js'",
     "prepare": "cross-env NODE_ENV=production npm run build",
     "watch": "babel -w src --out-dir . --ignore '**/*.test.js'",

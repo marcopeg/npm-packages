@@ -1,14 +1,14 @@
-import "isomorphic-fetch";
-import clone from "clone-deep";
-import dotted from "@marcopeg/dotted";
-import template from "@marcopeg/template";
-import { applyRules } from "./resolver-rules";
+import 'isomorphic-fetch';
+import clone from 'clone-deep';
+import dotted from '@marcopeg/dotted';
+import template from '@marcopeg/template';
+import { applyRules } from './resolver-rules';
 
-const resolverParserREST = config => async variables => {
+const resolverParserREST = config => async (variables, requestOptions = {}) => {
   const fetchConfig = {
-    method: (config.method || "GET").toUpperCase(),
+    method: (config.method || 'GET').toUpperCase(),
     headers: clone(config.headers || {}),
-    body: clone(config.body || {})
+    body: clone(config.body || {}),
   };
 
   // handle variables in headers
@@ -18,7 +18,7 @@ const resolverParserREST = config => async variables => {
 
   // handle variables in body
   Object.keys(fetchConfig.body).forEach(key => {
-    if (typeof fetchConfig.body[key] === "string") {
+    if (typeof fetchConfig.body[key] === 'string') {
       fetchConfig.body[key] = template(fetchConfig.body[key], variables);
     }
   });
@@ -28,25 +28,42 @@ const resolverParserREST = config => async variables => {
   // looks like there is an inconsistent behavior in ExpressJS when
   // a GET contains a "body" and the handler awaits a promise
   // https://github.com/expressjs/express/issues/4026
-  if (fetchConfig.method === "GET" || fetchConfig.body === "{}") {
+  if (fetchConfig.method === 'GET' || fetchConfig.body === '{}') {
     delete fetchConfig.body;
   }
 
   const url = template(config.url, variables);
   const res = await fetch(url, fetchConfig);
 
-  return applyRules(config, res);
+  // Allow to return a tuple with result and full execution details
+  const result = await applyRules(config, res);
+  return variables === true ||
+    requestOptions === true ||
+    requestOptions.withDetails
+    ? [
+        result,
+        {
+          config,
+          variables,
+          request: {
+            url,
+            ...fetchConfig,
+          },
+          response: res,
+        },
+      ]
+    : result;
 };
 
 const resolverParserGQL = config => async variables => {
   const restConfig = {
     url: config.url,
-    method: (config.method || "POST").toUpperCase(),
+    method: (config.method || 'POST').toUpperCase(),
     headers: {
       ...clone(config.headers || {}),
-      "Content-type": "application/json; charset=UTF-8"
+      'Content-type': 'application/json; charset=UTF-8',
     },
-    rules: clone(config.rules || [])
+    rules: clone(config.rules || []),
   };
 
   // handle variables in headers
@@ -67,15 +84,15 @@ const resolverParserGQL = config => async variables => {
     ...restConfig,
     body: {
       query: config.query,
-      variables: queryVariables || variables
-    }
+      variables: queryVariables || variables,
+    },
   });
 
   const res = await restRequest(variables);
 
   // Throw if any of the underlying APIs returns any kind of error
   if (res.errors) {
-    throw new Error(res.errors.map(err => err.message).join(" :: "));
+    throw new Error(res.errors.map(err => err.message).join(' :: '));
   }
 
   return config.shape
@@ -86,7 +103,7 @@ const resolverParserGQL = config => async variables => {
 const parsers = {
   rest: resolverParserREST,
   http: resolverParserREST,
-  graphql: resolverParserGQL
+  graphql: resolverParserGQL,
 };
 
 export const resolverParser = config => parsers[config.type](config);
