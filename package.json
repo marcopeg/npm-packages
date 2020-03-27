@@ -6,6 +6,7 @@
   "scripts": {
     "boot": "npm install && lerna bootstrap",
     "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
+    "build": "lerna run build",
     "test": "lerna run test",
     "ci-bootstrap": "lerna bootstrap --hoist",
     "ci-test": "lerna run test",
