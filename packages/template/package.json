@@ -1,14 +1,14 @@
 {
   "name": "@marcopeg/template",
   "description": "Minimalist variable substitution utility",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
   "bugs": {
     "url": "https://github.com/marcopeg/npm-packages/issues"
   },
   "dependencies": {
     "@babel/runtime": "^7.4.4",
-    "@marcopeg/dotted": "^1.7.1"
+    "@marcopeg/dotted": "^1.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
