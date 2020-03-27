@@ -1,7 +1,7 @@
 {
   "name": "graphql-extension",
   "description": "Helps parsing JSON definition of a portion of a GraphQL schema",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
   "bugs": {
     "url": "https://github.com/marcopeg/npm-packages/issues"
@@ -10,7 +10,7 @@
     "@babel/runtime": "^7.4.4",
     "@marcopeg/dotted": "^1.9.0",
     "@marcopeg/template": "^1.9.0",
-    "fetch-resolver": "^1.9.1",
+    "fetch-resolver": "^1.9.2",
     "flat": "^4.1.0",
     "graphql": "^14.6.0",
     "graphql-type-json": "^0.3.0"
