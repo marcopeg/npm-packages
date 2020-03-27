@@ -190,6 +190,28 @@ describe('resolverParser()', () => {
       }
     });
 
+    test('it should handle a custom defined rule and filter', async () => {
+      const resolve = resolverParser({
+        type: 'rest',
+        rules: [
+          {
+            match: ({ res }) => res.status == 322,
+            apply: ({ res }) => res.statusText,
+          },
+        ],
+      });
+
+      jest.spyOn(global, 'fetch').mockImplementationOnce(() =>
+        Promise.resolve({
+          status: 322,
+          statusText: 'foobar',
+        }),
+      );
+
+      const res = await resolve();
+      expect(res).toBe('foobar');
+    });
+
     test('it should convert a plain statusText into a JSON response', async () => {
       const resolve = resolverParser({
         type: 'rest',

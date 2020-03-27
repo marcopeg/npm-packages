@@ -17,15 +17,15 @@
  * ]
  */
 
-import dotted from "@marcopeg/dotted";
-import template from "@marcopeg/template";
+import dotted from '@marcopeg/dotted';
+import template from '@marcopeg/template';
 
 const ruleMatcher = {
   // used for the fallback rule
   all: () => true,
   // matches the status code against a list of possible options
   status: ({ rule, res }) => rule.match[1].includes(res.status),
-  statusError: ({ rule, res }) => res.status >= 400
+  statusError: ({ rule, res }) => res.status >= 400,
 };
 
 const ruleApply = {
@@ -42,7 +42,7 @@ const ruleApply = {
   },
   // transforms a response info into json
   res2json: async ({ rule, res }) => {
-    let text = "";
+    let text = '';
     let body = {};
 
     try {
@@ -60,30 +60,34 @@ const ruleApply = {
     throw new Error(`${res.status} ${res.statusText}`);
   },
   // yeah... just return some plain values out of the rule
-  value: ({ rule }) => rule.apply[1]
+  value: ({ rule }) => rule.apply[1],
 };
 
 export const applyRules = (config, res) => {
   const rules = [
     ...(config.rules || []),
     {
-      match: ["all"],
-      apply: ["json", config.grab, config.shape]
-    }
+      match: ['all'],
+      apply: ['json', config.grab, config.shape],
+    },
   ];
 
   // Identify the correct rule
   const rule = rules.find(rule => {
-    const matcher = ruleMatcher[rule.match[0]];
+    const matcher =
+      typeof rule.match === 'function'
+        ? rule.match
+        : ruleMatcher[rule.match[0]];
     if (!matcher || !matcher({ config, rule, res })) return false;
     return true;
   });
 
   // Identify the correct applier
-  const apply = ruleApply[rule.apply[0]];
+  const apply =
+    typeof rule.apply === 'function' ? rule.apply : ruleApply[rule.apply[0]];
   if (!apply)
     throw new Error(
-      `Unexpected apply "${rule.apply[0]}" for the rule "${rule.match[0]}"`
+      `Unexpected apply "${rule.apply[0]}" for the rule "${rule.match[0]}"`,
     );
 
   return apply({ config, rule, res });
