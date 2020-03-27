@@ -212,6 +212,34 @@ describe('resolverParser()', () => {
       }
     });
 
+    test('it should handle res2json with errors', async () => {
+      jest.spyOn(global, 'fetch').mockImplementationOnce(() =>
+        Promise.resolve({
+          status: 322,
+          statusText: 'foobar',
+          text: () => Promise.resolve(JSON.stringify({ ok: true })),
+        }),
+      );
+
+      const resolve = resolverParser({
+        type: 'rest',
+        url: 'https://app.mysocial.io/api/v1/auth/uname',
+        rules: [
+          {
+            match: ['all'],
+            apply: [
+              'res2json',
+              { text: 'text', body: 'body', errors: 'errors' },
+            ],
+          },
+        ],
+      });
+
+      const res = await resolve({});
+      expect(res.text).toBe('{"ok":true}');
+      expect(res.body.ok).toBe(true);
+    });
+
     test('it should handle a custom defined rule and filter', async () => {
       const resolve = resolverParser({
         type: 'rest',

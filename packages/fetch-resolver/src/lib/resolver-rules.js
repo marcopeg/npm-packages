@@ -48,6 +48,7 @@ const ruleApply = {
     let body = {};
     const errors = [];
 
+    // Get the text based version of the response
     try {
       text = await res.text();
     } catch (err) {
@@ -57,8 +58,9 @@ const ruleApply = {
       });
     }
 
+    // Try to parse it as JSON
     try {
-      body = await res.json();
+      body = JSON.parse(text);
     } catch (err) {
       errors.push({
         type: 'body',
