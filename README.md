@@ -7,6 +7,7 @@
 ![GitHub issues](https://img.shields.io/github/issues-raw/marcopeg/npm-packages.svg)
 ![GitHub stars](https://img.shields.io/github/stars/marcopeg/npm-packages.svg?style=social)
 
+[![Open in GitPod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io#https://github.com/marcopeg/npm-packages)
 
 ## LICENCE
 
