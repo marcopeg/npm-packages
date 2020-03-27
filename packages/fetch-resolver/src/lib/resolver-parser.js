@@ -55,7 +55,7 @@ const resolverParserREST = config => async (variables, requestOptions = {}) => {
     : result;
 };
 
-const resolverParserGQL = config => async variables => {
+const resolverParserGQL = config => async (variables, requestOptions = {}) => {
   const restConfig = {
     url: config.url,
     method: (config.method || 'POST').toUpperCase(),
@@ -88,16 +88,32 @@ const resolverParserGQL = config => async variables => {
     },
   });
 
-  const res = await restRequest(variables);
+  // Make the http request forcing a tuble based output
+  const [res, details] = await restRequest(variables, {
+    ...requestOptions,
+    withDetails: true,
+  });
 
   // Throw if any of the underlying APIs returns any kind of error
   if (res.errors) {
     throw new Error(res.errors.map(err => err.message).join(' :: '));
   }
 
-  return config.shape
+  const result = config.shape
     ? template(config.shape, dotted(res, config.grab))
     : dotted(res, config.grab);
+
+  return variables === true ||
+    requestOptions === true ||
+    requestOptions.withDetails
+    ? [
+        result,
+        {
+          ...details,
+          config,
+        },
+      ]
+    : result;
 };
 
 const parsers = {
