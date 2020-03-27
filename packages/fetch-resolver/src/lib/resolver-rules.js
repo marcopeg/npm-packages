@@ -29,6 +29,8 @@ const ruleMatcher = {
 };
 
 const ruleApply = {
+  // parse the response to plain text
+  text: async ({ res }) => await res.text(),
   // parse response's JSON and apply "grab" and "shape" to it
   json: async ({ rule, res }) => {
     const data = await res.json();
@@ -44,16 +46,27 @@ const ruleApply = {
   res2json: async ({ rule, res }) => {
     let text = '';
     let body = {};
+    const errors = [];
 
     try {
       text = await res.text();
-    } catch (err) {}
+    } catch (err) {
+      errors.push({
+        type: 'text',
+        message: err.message,
+      });
+    }
 
     try {
       body = await res.json();
-    } catch (err) {}
+    } catch (err) {
+      errors.push({
+        type: 'body',
+        message: err.message,
+      });
+    }
 
-    return template(rule.apply[1], { res, text, body });
+    return template(rule.apply[1], { res, text, body, errors });
   },
   // just throw a template with the full status error
   statusError: ({ rule, res }) => {

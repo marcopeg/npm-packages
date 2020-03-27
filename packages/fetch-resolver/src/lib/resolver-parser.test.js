@@ -21,6 +21,28 @@ describe('resolverParser()', () => {
       expect(res).toBeInstanceOf(Array);
     });
 
+    test('it should parse a simple get that returns plain text', async () => {
+      jest.spyOn(global, 'fetch').mockImplementationOnce((url, config) =>
+        Promise.resolve({
+          text: () => Promise.resolve('hello world'),
+        }),
+      );
+
+      const resolve = resolverParser({
+        type: 'rest',
+        url: 'https://foobar.io/',
+        rules: [
+          {
+            match: ['all'],
+            apply: ['text'],
+          },
+        ],
+      });
+
+      const res = await resolve();
+      expect(res).toBe('hello world');
+    });
+
     test('it should inject parameters into the request url', async () => {
       const resolve = resolverParser({
         type: 'rest',
