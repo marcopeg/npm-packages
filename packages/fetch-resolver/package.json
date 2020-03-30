@@ -1,15 +1,15 @@
 {
   "name": "fetch-resolver",
   "description": "Generate custom fetch resolver functions for REST and GraphQL using a JSON definition",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
   "bugs": {
     "url": "https://github.com/marcopeg/npm-packages/issues"
   },
   "dependencies": {
     "@babel/runtime": "^7.4.4",
-    "@marcopeg/dotted": "^1.11.0",
-    "@marcopeg/template": "^1.11.0",
+    "@marcopeg/dotted": "^1.12.0",
+    "@marcopeg/template": "^1.12.0",
     "clone-deep": "^4.0.1",
     "isomorphic-fetch": "^2.2.1"
   },
