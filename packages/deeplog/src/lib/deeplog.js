@@ -9,6 +9,12 @@ export const deepLog = (...args) => {
   });
 };
 
+export const deepInfo = (...args) => {
+  args.forEach(arg => {
+    console.info(JSON.stringify(arg, null, 2));
+  });
+};
+
 export const deepWarn = (...args) => {
   args.forEach(arg => {
     console.warn(JSON.stringify(arg, null, 2));
@@ -20,8 +26,3 @@ export const deepError = (...args) => {
     console.error(JSON.stringify(arg, null, 2));
   });
 };
-
-// Export the global interface
-deepLog.warn = deepWarn;
-deepLog.error = deepError;
-export default deepLog;
