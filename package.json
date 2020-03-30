@@ -23,11 +23,10 @@
     "url": "git+https://github.com/forrestjs/core.git"
   },
   "keywords": [
-    "react",
-    "ssr",
-    "redux",
-    "universal",
-    "server side rendering"
+    "npm",
+    "packages",
+    "marcopeg",
+    "utils"
   ],
   "devDependencies": {
     "@babel/core": "^7.4.4",

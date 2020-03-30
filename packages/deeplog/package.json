@@ -1,0 +1,45 @@
+{
+  "name": "deeplog",
+  "description": "Console logs formatted JSON",
+  "version": "0.0.0",
+  "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
+  "bugs": {
+    "url": "https://github.com/marcopeg/npm-packages/issues"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@forrestjs/babel-preset-package": "^2.9.4",
+    "cross-env": "^5.1.4",
+    "jest": "^25.1.0"
+  },
+  "homepage": "https://github.com/marcopeg/npm-packages/tree/master/packages/deeplog#readme",
+  "keywords": [
+    "console",
+    "log",
+    "warn",
+    "error",
+    "json",
+    "deep",
+    "formatted",
+    "pretty"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/marcopeg/npm-packages/tree/master/packages/deeplog",
+  "scripts": {
+    "clean": "rm -rf node_modules && rm -f yarn.lock && rm -f package-lock.json && rm -rf lib",
+    "test": "jest",
+    "tdd": "jest --watchAll",
+    "build": "babel src --out-dir . --ignore '**/*.test.js'",
+    "prepare": "cross-env NODE_ENV=production npm run build",
+    "watch": "babel -w src --out-dir . --ignore '**/*.test.js'",
+    "watch:to": "babel -w src --out-dir \"${TARGET}/node_modules/${npm_package_name}\" --ignore '**/*.test.js'"
+  },
+  "gitHead": "047967b7d836ef4e67255f2eb4d16d139e57d4b1"
+}
