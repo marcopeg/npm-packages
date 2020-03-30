@@ -1,7 +1,7 @@
 {
   "name": "@marcopeg/deeplog",
   "description": "Console logs formatted JSON",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com>",
   "main": "index.js",
   "bugs": {
