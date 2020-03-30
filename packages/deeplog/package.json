@@ -2,7 +2,7 @@
   "name": "@marcopeg/deeplog",
   "description": "Console logs formatted JSON",
   "version": "0.0.0",
-  "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
+  "author": "Marco Pegoraro <marco.pegoraro@gmail.com>",
   "bugs": {
     "url": "https://github.com/marcopeg/npm-packages/issues"
   },
