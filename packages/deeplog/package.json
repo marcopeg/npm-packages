@@ -1,7 +1,7 @@
 {
   "name": "@marcopeg/deeplog",
   "description": "Console logs formatted JSON",
-  "version": "0.0.0",
+  "version": "1.11.0",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com>",
   "bugs": {
     "url": "https://github.com/marcopeg/npm-packages/issues"
@@ -41,5 +41,5 @@
     "watch": "babel -w src --out-dir . --ignore '**/*.test.js'",
     "watch:to": "babel -w src --out-dir \"${TARGET}/node_modules/${npm_package_name}\" --ignore '**/*.test.js'"
   },
-  "gitHead": "047967b7d836ef4e67255f2eb4d16d139e57d4b1"
+  "gitHead": "300484c766bd894999ac37a6cb41375fdb744cfa"
 }

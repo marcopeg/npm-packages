@@ -1,6 +1,6 @@
 {
   "name": "@marcopeg/spawn",
-  "version": "1.9.0",
+  "version": "1.11.0",
   "description": "An async wrapper around child_process.spawn with a rich API to control the spawned process",
   "main": "index.js",
   "scripts": {
@@ -23,5 +23,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "300484c766bd894999ac37a6cb41375fdb744cfa"
 }
