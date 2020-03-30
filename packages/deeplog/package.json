@@ -1,5 +1,5 @@
 {
-  "name": "deeplog",
+  "name": "@marcopeg/deeplog",
   "description": "Console logs formatted JSON",
   "version": "0.0.0",
   "author": "Marco Pegoraro <marco.pegoraro@gmail.com",
