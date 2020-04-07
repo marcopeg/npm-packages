@@ -8,8 +8,9 @@
     "clean": "lerna run clean && lerna clean --yes && rm -rf node_modules",
     "build": "lerna run build",
     "test": "lerna run test",
-    "ci-bootstrap": "lerna bootstrap --hoist",
+    "ci-bootstrap": "npm install && lerna bootstrap --hoist",
     "ci-test": "lerna run test",
+    "ci-publish": "lerna publish --canary",
     "deploy": "lerna publish --force-publish"
   },
   "author": "Marco Pegoraro",

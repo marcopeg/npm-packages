@@ -5,11 +5,11 @@ jobs:
       - image: circleci/node:10.15.3
     steps:
       - checkout
-      - run: lerna bootstrap --no-ci && lerna run build
-      - run: npm run boot
-      - run: npm run clean
-      - run: npm run build
-      - run: npm run test
+      # - run: lerna bootstrap --no-ci && lerna run build
+      # - run: npm run boot
+      # - run: npm run clean
+      # - run: npm run build
+      # - run: npm run test
       - run: npm run ci-bootstrap
       - run: npm run ci-test
 
@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - run: npm run build
-      - run: lerna publish --canary
+      - run: npm run ci-publish
 
 workflows:
   test:
