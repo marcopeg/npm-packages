@@ -18,6 +18,7 @@ jobs:
       - image: circleci/node:10.15.3
     steps:
       - checkout
+      - run: npm run ci-bootstrap
       - run: npm run build
       - run: npm run ci-publish
 
