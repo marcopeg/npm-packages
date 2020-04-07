@@ -1,10 +1,45 @@
-version: 2
+version: 2.1
 jobs:
-  build:
+  build-and-test:
     docker:
-      - image: circleci/node:10.15
+      - image: circleci/node:10.15.3
     steps:
       - checkout
-      - run: npm install
+      - run: lerna bootstrap --no-ci && lerna run build
+      - run: npm run boot
+      - run: npm run clean
+      - run: npm run build
+      - run: npm run test
       - run: npm run ci-bootstrap
       - run: npm run ci-test
+
+  package-publisher:
+    docker:
+      - image: circleci/node:10.15.3
+    steps:
+      - checkout
+	    - run: npm run build
+      - run: lerna publish --canary
+
+workflows:
+  test:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore:
+                - /.*/
+            tags:
+              only:
+                - /.*/
+
+      - package-publisher:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              ignore:
+                - /.*/
+            tags:
+              only:
+                - /.*/
