@@ -57,30 +57,28 @@ workflows:
             tags:
               only:
                 - /v1.0.*/
-
-      - package-minor-release:
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              ignore:
-                - /.*/
-            tags:
-              only:
-                - /v1.*/
-              ignore:
-                - /v1.0.*/
-
-      - package-major-release:
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              ignore:
-                - /.*/
-            tags:
-              only:
-                - /v*/
-              ignore:
-                - /v1.*/
-                - /v1.0.*/
+      # - package-minor-release:
+      #     requires:
+      #       - build-and-test
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - /.*/
+      #       tags:
+      #         only:
+      #           - /v1.*/
+      #         ignore:
+      #           - /v1.0.*/
+      # - package-major-release:
+      #     requires:
+      #       - build-and-test
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - /.*/
+      #       tags:
+      #         only:
+      #           - /v*/
+      #         ignore:
+      #           - /v1.*/
+      #           - /v1.0.*/
