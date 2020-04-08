@@ -15,7 +15,7 @@ jobs:
       - checkout
       - run: npm run ci-bootstrap
       - run: npm run build
-      - run: lerna publish --canary preminor
+      - run: npm run ci-publish preminor
 
   package-minor-release:
     docker:
@@ -24,7 +24,7 @@ jobs:
       - checkout
       - run: npm run ci-bootstrap
       - run: npm run build
-      - run: lerna publish --canary minor
+      - run: npm run ci-publish minor
 
   package-major-release:
     docker:
@@ -33,7 +33,7 @@ jobs:
       - checkout
       - run: npm run ci-bootstrap
       - run: npm run build
-      - run: lerna publish --canary major
+      - run: npm run ci-publish major
 
 workflows:
   test:
