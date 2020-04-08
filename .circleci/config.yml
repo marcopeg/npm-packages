@@ -5,22 +5,35 @@ jobs:
       - image: circleci/node:10.15.3
     steps:
       - checkout
-      # - run: lerna bootstrap --no-ci && lerna run build
-      # - run: npm run boot
-      # - run: npm run clean
-      # - run: npm run build
-      # - run: npm run test
       - run: npm run ci-bootstrap
       - run: npm run ci-test
 
-  package-publisher:
+  package-patch-release:
     docker:
       - image: circleci/node:10.15.3
     steps:
       - checkout
       - run: npm run ci-bootstrap
       - run: npm run build
-      - run: npm run ci-publish
+      - run: lerna publish --canary preminor
+
+  package-minor-release:
+    docker:
+      - image: circleci/node:10.15.3
+    steps:
+      - checkout
+      - run: npm run ci-bootstrap
+      - run: npm run build
+      - run: lerna publish --canary minor
+
+  package-major-release:
+    docker:
+      - image: circleci/node:10.15.3
+    steps:
+      - checkout
+      - run: npm run ci-bootstrap
+      - run: npm run build
+      - run: lerna publish --canary major
 
 workflows:
   test:
@@ -28,13 +41,13 @@ workflows:
       - build-and-test:
           filters:
             branches:
-              ignore:
+              only:
                 - /.*/
             tags:
               only:
                 - /.*/
 
-      - package-publisher:
+      - package-patch-release:
           requires:
             - build-and-test
           filters:
@@ -43,4 +56,31 @@ workflows:
                 - /.*/
             tags:
               only:
+                - /v1.0.*/
+
+      - package-minor-release:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              ignore:
                 - /.*/
+            tags:
+              only:
+                - /v1.*/
+              ignore:
+                - /v1.0.*/
+
+      - package-major-release:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              ignore:
+                - /.*/
+            tags:
+              only:
+                - /v*/
+              ignore:
+                - /v1.*/
+                - /v1.0.*/
