@@ -11,7 +11,7 @@
     "@marcopeg/dotted": "^1.12.0",
     "@marcopeg/template": "^1.12.0",
     "fetch-resolver": "^1.12.0",
-    "flat": "^4.1.0",
+    "flat": "^5.0.1",
     "graphql": "^14.6.0",
     "graphql-type-json": "^0.3.0"
   },
